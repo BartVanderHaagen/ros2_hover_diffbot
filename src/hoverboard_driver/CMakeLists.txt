@@ -6,6 +6,7 @@ set(CMAKE_CXX_COMPILER "/usr/bin/g++")
 if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 14)
 endif()
+
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
@@ -23,6 +24,13 @@ find_package(control_toolbox REQUIRED)
 ## System dependencies are found with CMake's conventions
 find_package(Boost REQUIRED COMPONENTS system)
 
+add_library(
+  ${PROJECT_NAME}
+  SHARED
+  src/hoverboard.cpp
+  src/pid.cpp
+)
+
 include_directories(
  include
  include/hoverboard_driver
@@ -32,12 +40,14 @@ include_directories(
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
 
-add_executable(hoverboard_driver 
-  src/hoverboard.cpp 
-  src/pid.cpp
-  src/main.cpp
-)
+# add_executable(hoverboard_driver 
+#   src/hoverboard.cpp 
+#   src/pid.cpp
+#   src/main.cpp
+# )
+
 target_link_libraries(hoverboard_driver ${Boost_LIBRARIES})
+
 ament_target_dependencies(hoverboard_driver
   rclcpp
   pluginlib
@@ -45,6 +55,7 @@ ament_target_dependencies(hoverboard_driver
   controller_manager
   hardware_interface
 )
+
 #pluginlib_export_plugin_description_file(hardware_interface config/hardware.yaml)
 pluginlib_export_plugin_description_file(hardware_interface config/hardware.xml)
 

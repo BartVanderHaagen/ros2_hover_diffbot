@@ -24,6 +24,8 @@ constexpr double MAX_VELOCITY = 1;
 constexpr int DIRECTION_CORRECTION = 1;
 constexpr char PORT[] = "/dev/pts/2";
 
+namespace ros2_control_hoverboard_hardware {
+    
 class HoverboardAPI;
 
 class HoverboardController : public hardware_interface::SystemInterface {
@@ -111,5 +113,6 @@ public:
 
     PID pids[2];
 };
+}
 
 #endif // HOVERBOARD_H_

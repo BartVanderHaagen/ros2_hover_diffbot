@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <termios.h>
-
+namespace ros2_control_hoverboard_hardware {
 HoverboardController::HoverboardController() : node("HoverboardController") {
     last_read = node.now();
     // These publishers are only for debugging purposes
@@ -281,8 +281,9 @@ void HoverboardController::on_encoder_update (int16_t right, int16_t left) {
     pos_pub[0]->publish(joints[0].pos);
     pos_pub[1]->publish(joints[1].pos);
 }
+}
 
 #include "pluginlib/class_list_macros.hpp"
 
 PLUGINLIB_EXPORT_CLASS(
-    HoverboardController, hardware_interface::SystemInterface)
+    ros2_control_hoverboard_hardware::HoverboardController, hardware_interface::SystemInterface)
