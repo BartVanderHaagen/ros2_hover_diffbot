@@ -1,6 +1,6 @@
-<library path=".">
+<library path="hoverboard_driver">
   <class name="HoverboardController"
-         type="HoverboardController"
+         type="ros2_control_hoverboard_hardware::HoverboardController"
          base_class_type="hardware_interface::SystemInterface">
     <description>
       The ros2_control HoverboardController
