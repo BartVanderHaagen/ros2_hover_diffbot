@@ -9,7 +9,7 @@
 #include <fcntl.h>
 #include <termios.h>
 
-Hoverboard::Hoverboard() : node("hoverboard") {
+HoverboardController::HoverboardController() : node("hoverboard") {
     last_read = node.now();
     // These publishers are only for debugging purposes
     vel_pub[0]    = node.create_publisher<std_msgs::msg::Float64>("hoverboard/left_wheel/velocity", 3);
@@ -57,22 +57,22 @@ Hoverboard::Hoverboard() : node("hoverboard") {
     tcsetattr(port_fd, TCSANOW, &options);
 }
 
-Hoverboard::~Hoverboard() {
+HoverboardController::~HoverboardController() {
     if (port_fd != -1) 
         close(port_fd);
 }
 
-hardware_interface::return_type Hoverboard::configure(
+hardware_interface::return_type HoverboardController::configure(
         const hardware_interface::HardwareInfo &system_info){
     RCLCPP_INFO(node.get_logger(), "Hardware 'hoverboard' (SystemInterface) being configured");
     return hardware_interface::return_type::OK;
 }
 
-hardware_interface::return_type Hoverboard::start(){
+hardware_interface::return_type HoverboardController::start(){
     return hardware_interface::return_type::OK;
 }
 
-std::vector<hardware_interface::StateInterface> Hoverboard::export_state_interfaces() {
+std::vector<hardware_interface::StateInterface> HoverboardController::export_state_interfaces() {
     std::vector<hardware_interface::StateInterface> state_interfaces;
     state_interfaces.emplace_back(hardware_interface::StateInterface(
         "left_wheels", hardware_interface::HW_IF_POSITION, &joints[0].pos.data));
@@ -85,7 +85,7 @@ std::vector<hardware_interface::StateInterface> Hoverboard::export_state_interfa
     return state_interfaces;
 }
 
-std::vector<hardware_interface::CommandInterface> Hoverboard::export_command_interfaces() {
+std::vector<hardware_interface::CommandInterface> HoverboardController::export_command_interfaces() {
     std::vector<hardware_interface::CommandInterface> command_interfaces;
     command_interfaces.emplace_back(hardware_interface::CommandInterface(
         "left_wheels", hardware_interface::HW_IF_VELOCITY, &joints[0].cmd.data));
@@ -94,7 +94,7 @@ std::vector<hardware_interface::CommandInterface> Hoverboard::export_command_int
     return command_interfaces;
 }
 
-hardware_interface::return_type Hoverboard::read() {
+hardware_interface::return_type HoverboardController::read(const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/) {
     // TODO: Throttle log
     // RCLCPP_INFO(node.get_logger(), "Reading port %s | %d", port.c_str(), port_fd);
     if (port_fd != -1) {
@@ -133,7 +133,7 @@ hardware_interface::return_type Hoverboard::read() {
     return hardware_interface::return_type::OK;
 }
 
-void Hoverboard::protocol_recv (char byte) {
+void HoverboardController::protocol_recv (char byte) {
     start_frame = ((uint16_t)(byte) << 8) | (uint8_t)prev_byte;
 
     // Read the start frame
@@ -187,7 +187,7 @@ void Hoverboard::protocol_recv (char byte) {
     prev_byte = byte;
 }
 
-hardware_interface::return_type Hoverboard::write() {
+hardware_interface::return_type HoverboardController::write(const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/) {
     // TODO: Throttle log
     // RCLCPP_INFO(node.get_logger(), "Writing port %s", port.c_str());
     if (port_fd == -1) {
@@ -199,8 +199,8 @@ hardware_interface::return_type Hoverboard::write() {
     cmd_pub[1]->publish(joints[1].cmd);
 
     double pid_outputs[2];
-    pid_outputs[0] = pids[0](joints[0].vel.data, joints[0].cmd.data, rclcpp::Duration(20000000));
-    pid_outputs[1] = pids[1](joints[1].vel.data, joints[1].cmd.data, rclcpp::Duration(20000000));
+    pid_outputs[0] = pids[0](joints[0].vel.data, joints[0].cmd.data, rclcpp::Duration((std::chrono::nanoseconds) 20000000));
+    pid_outputs[1] = pids[1](joints[1].vel.data, joints[1].cmd.data, rclcpp::Duration((std::chrono::nanoseconds) 20000000));
 
     // Convert PID outputs in RAD/S to RPM
     double set_speed[2] = {
@@ -226,7 +226,7 @@ hardware_interface::return_type Hoverboard::write() {
     return hardware_interface::return_type::OK;
 }
 
-void Hoverboard::on_encoder_update (int16_t right, int16_t left) {
+void HoverboardController::on_encoder_update (int16_t right, int16_t left) {
     double posL = 0.0, posR = 0.0;
 
     // Calculate wheel position in ticks, factoring in encoder wraps
@@ -285,4 +285,4 @@ void Hoverboard::on_encoder_update (int16_t right, int16_t left) {
 #include "pluginlib/class_list_macros.hpp"
 
 PLUGINLIB_EXPORT_CLASS(
-    Hoverboard, hardware_interface::SystemInterface)
+    HoverboardController, hardware_interface::SystemInterface)

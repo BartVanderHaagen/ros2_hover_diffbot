@@ -26,12 +26,12 @@ constexpr char PORT[] = "/dev/pts/2";
 
 class HoverboardAPI;
 
-class Hoverboard : public hardware_interface::SystemInterface {
+class HoverboardController : public hardware_interface::SystemInterface {
 public:
-    RCLCPP_SHARED_PTR_DEFINITIONS(Hoverboard)
+    RCLCPP_SHARED_PTR_DEFINITIONS(HoverboardController)
 
-    Hoverboard();
-    ~Hoverboard();
+    HoverboardController();
+    ~HoverboardController();
     
     // TODO: implement
     hardware_interface::return_type start();
@@ -43,16 +43,18 @@ public:
         return "hoverboard_driver";
     }
 
-    hardware_interface::return_type read();
-    hardware_interface::return_type write();
+    // hardware_interface::return_type HoverboardController::read()
+
+    hardware_interface::return_type read(const rclcpp::Time & time, const rclcpp::Duration & period) override;
+    hardware_interface::return_type write(const rclcpp::Time & time, const rclcpp::Duration & period) override;
     hardware_interface::return_type update(){
         return hardware_interface::return_type::OK;
     }
 
     // TODO: implement
-    hardware_interface::status get_status() const {
+    /*hardware_interface::status get_status() const {
         return hardware_interface::status::UNKNOWN;
-    }
+    }*/
 
     // TODO: implement
     hardware_interface::return_type configure(

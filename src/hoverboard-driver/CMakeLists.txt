@@ -30,7 +30,7 @@ include_directories(
 )
 
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
-install(DIRECTORY config)
+install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
 
 add_executable(hoverboard_driver 
   src/hoverboard.cpp 

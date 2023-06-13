@@ -73,6 +73,17 @@
     "typeindex": "cpp",
     "typeinfo": "cpp",
     "complex": "cpp",
-    "bit": "cpp"
-  }
+    "bit": "cpp",
+    "compare": "cpp",
+    "concepts": "cpp",
+    "*.ipp": "cpp"
+  },
+  "python.autoComplete.extraPaths": [
+    "/opt/ros/humble/lib/python3.10/site-packages",
+    "/opt/ros/humble/local/lib/python3.10/dist-packages"
+  ],
+  "python.analysis.extraPaths": [
+    "/opt/ros/humble/lib/python3.10/site-packages",
+    "/opt/ros/humble/local/lib/python3.10/dist-packages"
+  ]
 }
