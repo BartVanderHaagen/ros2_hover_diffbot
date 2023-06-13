@@ -9,7 +9,7 @@
 #include <fcntl.h>
 #include <termios.h>
 
-HoverboardController::HoverboardController() : node("hoverboard") {
+HoverboardController::HoverboardController() : node("HoverboardController") {
     last_read = node.now();
     // These publishers are only for debugging purposes
     vel_pub[0]    = node.create_publisher<std_msgs::msg::Float64>("hoverboard/left_wheel/velocity", 3);

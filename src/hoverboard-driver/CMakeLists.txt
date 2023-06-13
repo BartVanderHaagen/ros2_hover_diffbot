@@ -45,7 +45,8 @@ ament_target_dependencies(hoverboard_driver
   controller_manager
   hardware_interface
 )
-pluginlib_export_plugin_description_file(hardware_interface config/hardware.yaml)
+#pluginlib_export_plugin_description_file(hardware_interface config/hardware.yaml)
+pluginlib_export_plugin_description_file(hardware_interface config/hardware.xml)
 
 install(TARGETS hoverboard_driver DESTINATION lib/${PROJECT_NAME})
 

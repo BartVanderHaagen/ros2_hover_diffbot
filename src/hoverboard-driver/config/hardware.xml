@@ -1,0 +1,9 @@
+<library path=".">
+  <class name="HoverboardController"
+         type="HoverboardController"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      The ros2_control HoverboardController
+    </description>
+  </class>
+</library>
